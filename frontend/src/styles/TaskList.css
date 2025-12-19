@@ -1,10 +1,86 @@
 .task-list {
-  margin-top: 20px;
+  margin-top: 30px;
+  position: relative;
+}
+
+.task-list::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary-gradient);
+  border-radius: 2px;
 }
 
 .empty-state {
   text-align: center;
-  color: #666;
+  color: var(--text-muted);
   font-style: italic;
-  margin-top: 40px;
+  margin-top: 60px;
+  padding: 40px 20px;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state::before {
+  content: '📝';
+  font-size: 48px;
+  display: block;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-state::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(102, 126, 234, 0.05) 50%, transparent 70%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 10px;
+  font-style: normal;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .task-list {
+    margin-top: 20px;
+  }
+
+  .empty-state {
+    margin-top: 40px;
+    padding: 30px 15px;
+  }
+
+  .empty-state::before {
+    font-size: 36px;
+  }
+
+  .empty-state h3 {
+    font-size: 20px;
+  }
 }
