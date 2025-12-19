@@ -2,6 +2,10 @@
 
 A full-stack task management application built as part of internship Project 1. This application allows students to efficiently manage their tasks with features like user authentication, CRUD operations, filtering, sorting, search, drag-and-drop reordering, and overdue notifications.
 
+## Live Demo
+
+Check out the live application: [https://student-task-manager-wheat.vercel.app/](https://student-task-manager-wheat.vercel.app/)
+
 ## Features
 
 - **User Authentication**: Secure signup and login using JWT tokens.
