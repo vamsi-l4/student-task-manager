@@ -86,6 +86,22 @@ The application will be accessible at `http://localhost:5173` for the frontend a
 - `PUT /api/tasks/:id` - Update an existing task
 - `DELETE /api/tasks/:id` - Delete a task
 
+## Deployment
+
+### Backend (Render)
+1. Push backend code to GitHub.
+2. Connect to Render and set environment variables (MONGO_URI, JWT_SECRET, PORT).
+3. Deploy the backend.
+
+### Frontend (Vercel)
+1. Push frontend code to GitHub.
+2. Connect to Vercel.
+3. In Vercel dashboard, go to your project settings > Environment Variables.
+4. Add a new environment variable:
+   - Name: `VITE_API_URL`
+   - Value: `https://student-task-manager-backend.onrender.com/api`
+5. Redeploy the frontend.
+
 ## Project Structure
 
 ```
