@@ -1,6 +1,6 @@
 import "../styles/FilterBar.css";
 
-export default function FilterBar({ setFilter, setSort }) {
+export default function FilterBar({ setFilter, setSort, setSearch }) {
   return (
     <div className="filter-bar">
       <div className="filters">
@@ -16,6 +16,13 @@ export default function FilterBar({ setFilter, setSort }) {
           <option value="priority">Priority</option>
           <option value="dueDate">Due Date</option>
         </select>
+      </div>
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
     </div>
   );

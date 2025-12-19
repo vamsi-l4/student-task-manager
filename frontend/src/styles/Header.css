@@ -23,6 +23,25 @@
   font-size: 2rem;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
 .add-btn {
   background-color: var(--primary-color);
   color: white;
@@ -42,5 +61,10 @@
 
   .header h1 {
     font-size: 1.5rem;
+  }
+
+  .user-info {
+    flex-direction: column;
+    gap: 5px;
   }
 }

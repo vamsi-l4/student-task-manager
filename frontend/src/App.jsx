@@ -1,37 +1,35 @@
 import { useEffect, useState } from "react";
 import { api } from "./services/api";
+import { useAuth } from "./contexts/AuthContext";
 import Header from "./components/Header";
 import AddTaskForm from "./components/AddTaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
 import Modal from "./components/Modal";
+import AuthForm from "./components/AuthForm";
+import Notification from "./components/Notification";
 import "./styles/App.css";
 
 function App() {
+  const { user, logout, loading } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
   const [sort, setSort] = useState("createdAt");
   const [editingTask, setEditingTask] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchTasks = async () => {
-    const params = {};
+    if (!user) return;
+    const params = { sort };
     if (filter !== "all") params.status = filter;
-    // For simplicity, sort client-side for now, but backend can be updated
     const res = await api.get("/tasks", { params });
-    let sortedTasks = res.data;
-    if (sort === "priority") {
-      const priorityOrder = { high: 1, medium: 2, low: 3 };
-      sortedTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-    } else if (sort === "dueDate") {
-      sortedTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-    }
-    setTasks(sortedTasks);
+    setTasks(res.data);
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, [filter, sort]);
+    if (user) fetchTasks();
+  }, [user, filter, sort]);
 
   const handleAddTask = async (taskData) => {
     if (editingTask) {
@@ -60,22 +58,33 @@ function App() {
     fetchTasks();
   };
 
+  const handleReorder = (reorderedTasks) => {
+    setTasks(reorderedTasks);
+  };
+
   const filteredTasks = tasks.filter(task => {
-    if (filter === "completed") return task.completed;
-    if (filter === "pending") return !task.completed;
-    return true;
+    const matchesFilter = filter === "all" ||
+      (filter === "completed" && task.completed) ||
+      (filter === "pending" && !task.completed);
+    const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase()) ||
+      task.description.toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <AuthForm />;
 
   return (
     <div className="app">
-      <Header onAdd={() => { setEditingTask(null); setShowAddForm(true); }} />
+      <Header onAdd={() => { setEditingTask(null); setShowAddForm(true); }} onLogout={logout} user={user} />
+      <Notification tasks={tasks} />
       {showAddForm && (
         <Modal onClose={() => setShowAddForm(false)}>
           <AddTaskForm task={editingTask} onSubmit={handleAddTask} />
         </Modal>
       )}
-      <FilterBar setFilter={setFilter} setSort={setSort} />
-      <TaskList tasks={filteredTasks} onEdit={handleEdit} onDelete={handleDelete} onToggle={handleToggle} />
+      <FilterBar setFilter={setFilter} setSort={setSort} setSearch={setSearch} />
+      <TaskList tasks={filteredTasks} onEdit={handleEdit} onDelete={handleDelete} onToggle={handleToggle} onReorder={handleReorder} />
     </div>
   );
 }

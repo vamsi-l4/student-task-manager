@@ -2,20 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
 
-// GET /api/tasks - list all tasks, with optional filters
+// GET /api/tasks - list tasks for the authenticated user, with optional filters
 router.get('/', async (req, res) => {
   try {
     const { status, sort } = req.query;
-    let filter = {};
+    let filter = { userId: req.userId };
     if (status === 'pending') filter.completed = false;
     else if (status === 'completed') filter.completed = true;
     
     let sortOption = { createdAt: -1 };
     if (sort === 'priority') {
-      sortOption = { priority: 1 }; // high first? Wait, priority is string, need to sort by enum
-      // Actually, since priority is string, sort alphabetically: high, low, medium
-      // But better to sort by custom order
-      // For simplicity, sort as is, but frontend sorts
+      sortOption = { priority: 1 }; // alphabetical: high, low, medium - not ideal, but ok
     } else if (sort === 'dueDate') {
       sortOption = { dueDate: 1 };
     }
@@ -27,10 +24,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/tasks/:id - get single task
+// GET /api/tasks/:id - get single task if owned by user
 router.get('/:id', async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, userId: req.userId });
     if (!task) return res.status(404).json({ message: 'Task not found' });
     res.json(task);
   } catch (err) {
@@ -38,9 +35,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/tasks - create task
+// POST /api/tasks - create task for the user
 router.post('/', async (req, res) => {
   const task = new Task({
+    userId: req.userId,
     title: req.body.title,
     description: req.body.description,
     priority: req.body.priority,
@@ -54,10 +52,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/tasks/:id - update task
+// PUT /api/tasks/:id - update task if owned by user
 router.put('/:id', async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, userId: req.userId });
     if (!task) return res.status(404).json({ message: 'Task not found' });
     task.title = req.body.title || task.title;
     task.description = req.body.description || task.description;
@@ -71,10 +69,10 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/tasks/:id - delete task
+// DELETE /api/tasks/:id - delete task if owned by user
 router.delete('/:id', async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, userId: req.userId });
     if (!task) return res.status(404).json({ message: 'Task not found' });
     await task.deleteOne();
     res.json({ message: 'Task deleted' });

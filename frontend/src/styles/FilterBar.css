@@ -9,7 +9,7 @@
   box-shadow: var(--shadow);
 }
 
-.filters, .sorts {
+.filters, .sorts, .search {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -25,9 +25,20 @@
   border-radius: 4px;
 }
 
+.search input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+}
+
 @media (max-width: 768px) {
   .filter-bar {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .search input {
+    width: 100%;
   }
 }
