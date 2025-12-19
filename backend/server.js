@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://your-vercel-app.vercel.app'], // Add your Vercel URL
+  origin: ['http://localhost:5173', 'https://student-task-manager-wheat.vercel.app'], // Add your Vercel URL
   credentials: true
 }));
 app.use(express.json());
