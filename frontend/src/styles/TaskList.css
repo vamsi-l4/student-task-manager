@@ -1,0 +1,10 @@
+.task-list {
+  margin-top: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 40px;
+}
